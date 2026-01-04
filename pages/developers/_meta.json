@@ -1,0 +1,10 @@
+{
+  "index": "Getting Started",
+  "quickstart": "Quickstart",
+  "configuration": "Configuration",
+  "plugins": "Plugin System",
+  "llm-providers": "LLM Providers",
+  "logging": "Logging & Reports",
+  "testing": "Testing"
+}
+

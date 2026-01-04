@@ -1,0 +1,44 @@
+{
+  "index": {
+    "title": "Home",
+    "type": "page",
+    "display": "hidden"
+  },
+  "introduction": {
+    "title": "Introduction",
+    "type": "page"
+  },
+  "concepts": {
+    "title": "Concepts",
+    "type": "page"
+  },
+  "architecture": {
+    "title": "Architecture",
+    "type": "page"
+  },
+  "products": {
+    "title": "Products",
+    "type": "page"
+  },
+  "developers": {
+    "title": "Developer Docs",
+    "type": "page"
+  },
+  "prediction-markets": {
+    "title": "Prediction Markets",
+    "type": "page"
+  },
+  "security": {
+    "title": "Security",
+    "type": "page"
+  },
+  "faq": {
+    "title": "FAQ",
+    "type": "page"
+  },
+  "glossary": {
+    "title": "Glossary",
+    "type": "page"
+  }
+}
+

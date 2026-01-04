@@ -1,0 +1,217 @@
+import { Callout } from 'nextra/components'
+
+# Polymarket Prediction CLI
+
+Specialized CLI for prediction market analysis and simulation.
+
+<Callout type="warning" emoji="⚠️">
+  **Not Financial Advice**: This tool provides analysis and simulation only. All outputs include uncertainty ranges. Never risk more than you can afford to lose.
+</Callout>
+
+## Installation
+
+```bash
+npm install -g @dominion/polymarket-cli
+# or
+pnpm add -g @dominion/polymarket-cli
+```
+
+## Quick Start
+
+```bash
+# Set your token
+export DOMINION_API_TOKEN=dom_xxx
+
+# Scan active markets
+dominion-pm scan
+
+# Analyze a specific market
+dominion-pm analyze <market_id>
+
+# Compare top markets
+dominion-pm compare
+
+# Simulate a strategy
+dominion-pm simulate <market_id>
+```
+
+## Commands
+
+### `dominion-pm scan`
+
+Discover active markets.
+
+```bash
+dominion-pm scan --min-volume 10000 --category crypto
+```
+
+Output:
+```
+Found 15 markets matching criteria
+
+ID          | Question                           | Price | Volume
+------------|------------------------------------| ------|---------
+eth_jan26   | ETH > $4000 by Jan 31?            | 0.62  | $150K
+btc_100k    | BTC hits $100K in 2026?           | 0.45  | $2.1M
+...
+```
+
+### `dominion-pm analyze`
+
+Deep analysis of a single market.
+
+```bash
+dominion-pm analyze eth_jan26
+```
+
+Output:
+```
+Market Analysis: eth_jan26
+═══════════════════════════════════════════════════
+
+Question: Will ETH be above $4000 on January 31, 2026?
+Current Price: $0.62 (62% implied probability)
+
+Model Estimate:
+  Probability: 68% (confidence: 72%)
+  Range: 58% - 78%
+  Edge: +6%
+
+Key Factors:
+  • Recent price momentum positive
+  • Institutional inflows increasing
+  • Technical indicators bullish
+
+Assumptions:
+  • No major regulatory events
+  • General market conditions stable
+
+Failure Modes:
+  • Black swan event
+  • Major exchange hack
+  • Unexpected macro shock
+
+⚠️ This is analysis only, not financial advice.
+```
+
+### `dominion-pm compare`
+
+Compare multiple markets.
+
+```bash
+dominion-pm compare --top 10
+```
+
+### `dominion-pm simulate`
+
+Simulate trading strategies.
+
+```bash
+dominion-pm simulate eth_jan26 --position YES --size 100 --entry 0.62
+```
+
+Output:
+```
+Simulation Results
+═══════════════════════════════════════════════════
+
+Position: 100 YES @ $0.62
+Model Probability: 68%
+
+Scenarios:
+  Best Case (win):    +$38.00 (+61%)
+  Expected Value:     +$6.00 (+10%)
+  Worst Case (lose):  -$62.00 (-100%)
+
+Break-even Probability: 62%
+Edge vs Break-even: +6%
+
+⚠️ This is simulation only. Actual results will vary.
+```
+
+### `dominion-pm report`
+
+Generate detailed reports.
+
+```bash
+dominion-pm report latest --format markdown
+```
+
+## Configuration
+
+### Config File
+
+```yaml
+# pm.config.yaml
+general:
+  name: "my-analysis"
+
+provider:
+  default: "openai"
+
+polymarket:
+  api_url: "https://api.polymarket.com"
+
+scoring:
+  min_volume: 1000
+  min_liquidity: 500
+
+simulation:
+  default_scenarios: 3
+
+reporting:
+  output_dir: "./reports"
+  formats: ["json", "markdown"]
+```
+
+### Environment Variables
+
+```bash
+export DOMINION_API_TOKEN=dom_xxx
+```
+
+## Estimators
+
+### LLM Estimator
+
+Uses GPT-4 or Claude for probability estimation:
+- Contextual analysis
+- Factor identification
+- Uncertainty quantification
+
+### Baseline Estimator
+
+Deterministic heuristics:
+- Price momentum
+- Volume analysis
+- Time-to-expiry
+- Liquidity factors
+
+## Output Formats
+
+### JSON
+
+```json
+{
+  "market_id": "eth_jan26",
+  "analysis": {
+    "estimated_probability": 0.68,
+    "confidence": 0.72,
+    "edge": 0.06
+  },
+  "disclaimer": "This is analysis only, not financial advice."
+}
+```
+
+### Markdown
+
+Human-readable reports saved to `./reports/`.
+
+## Safety Features
+
+- All outputs include disclaimers
+- Confidence ranges always shown
+- No "guaranteed profit" language
+- Dry-run by default
+- `--approve` required for any execution
+

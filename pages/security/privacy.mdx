@@ -1,0 +1,78 @@
+# Privacy
+
+What Dominion logs and what it doesn't.
+
+## Principles
+
+1. **Minimal Collection** — Only log what's necessary
+2. **Prompt Redaction** — Contents not logged by default
+3. **User Control** — Data deletion available
+4. **Transparency** — Clear documentation
+
+## What IS Logged
+
+### Request Metadata
+
+```json
+{
+  "request_id": "req_abc",
+  "user_id": "user_xyz",
+  "endpoint": "/v1/llm/complete",
+  "status": 200,
+  "latency_ms": 850
+}
+```
+
+### Usage Metrics
+
+```json
+{
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tokens": 225,
+  "message_count": 2
+}
+```
+
+## What is NOT Logged
+
+| Data | Logged? |
+|------|---------|
+| Prompt content | No |
+| Response content | No |
+| Raw IP addresses | No (hashed) |
+| API key plaintext | No |
+
+## Log Retention
+
+| Type | Retention |
+|------|-----------|
+| Request logs | 30 days |
+| Usage metrics | 90 days |
+| Audit logs | 1 year |
+
+## User Rights
+
+### Data Export
+
+```bash
+dominion-pm data export
+```
+
+### Data Deletion
+
+```bash
+dominion-pm data delete --confirm
+```
+
+## Full Logging (Dev Only)
+
+```yaml
+logging:
+  include_prompts: true  # NOT for production
+```
+
+## Contact
+
+Privacy: privacy@dominion.network
+

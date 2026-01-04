@@ -1,0 +1,83 @@
+import { Callout } from 'nextra/components'
+
+# Safety & Guardrails
+
+Prediction markets involve risk. Dominion implements multiple safety measures.
+
+<Callout type="error" emoji="🚫">
+  **Never** use phrases like "guaranteed profit" or "risk-free". These are forbidden in all outputs.
+</Callout>
+
+## Core Principles
+
+1. **No Guaranteed Profits** — Never claim sure outcomes
+2. **Show Uncertainty** — Always display confidence ranges
+3. **Human Oversight** — Humans approve significant actions
+4. **Start Small** — Gradual exposure scaling
+
+## Mandatory Disclaimers
+
+Every output includes:
+
+```
+⚠️ This is analysis and simulation only, NOT financial advice.
+Confidence: 72% (±15%)
+Never risk more than you can afford to lose.
+```
+
+## Confidence Ranges
+
+```
+❌ Bad: "Probability: 65%"
+✅ Good: "Probability: 65% (confidence: 72%, range: 55-75%)"
+```
+
+## Position Limits
+
+| Limit | Value |
+|-------|-------|
+| Max per market | 10% of bankroll |
+| Max total exposure | 50% of bankroll |
+| Max single trade | 5% of bankroll |
+
+## Approval Gates
+
+All trades pass through:
+
+```
+Trade Proposal
+     │
+     ▼
+Policy Gate ──► Risk Gate ──► Rate Limit ──► Human Review?
+                                                  │
+                                                  ▼
+                                             Execute
+```
+
+## Manipulation Prevention
+
+| Mechanism | Purpose |
+|-----------|---------|
+| Position limits | Cap exposure |
+| TWAP pricing | Smooth spikes |
+| Auditor monitoring | Detect patterns |
+| Stake slashing | Punish bad actors |
+
+## Forbidden Language
+
+These phrases must **never** appear:
+
+- "guaranteed profit"
+- "risk-free"
+- "sure win"
+- "can't lose"
+- "certain return"
+
+## Emergency Procedures
+
+Markets can be paused for:
+- 20%+ price impact in 1 minute
+- 10x volume spike
+- Manipulation detected
+- Oracle failure
+

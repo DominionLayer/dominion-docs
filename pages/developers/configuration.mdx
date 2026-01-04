@@ -1,0 +1,193 @@
+# Configuration
+
+How to configure Dominion CLIs.
+
+## Config File
+
+Create `pm.config.yaml` (or `dominion.config.yaml`):
+
+```yaml
+# pm.config.yaml
+
+general:
+  name: "my-project"
+  dry_run: true
+
+gateway:
+  url: "https://web-production-2fb66.up.railway.app"
+  # Token via environment variable
+
+provider:
+  default: "openai"
+  openai:
+    model: "gpt-4o-mini"
+    temperature: 0.2
+  anthropic:
+    model: "claude-3-5-sonnet-20241022"
+    temperature: 0.2
+
+polymarket:
+  api_url: "https://api.polymarket.com"
+  rate_limit: 10
+
+scoring:
+  min_volume: 1000
+  min_liquidity: 500
+  max_spread: 0.10
+  min_time_to_expiry_hours: 24
+
+simulation:
+  default_scenarios: 3
+  max_position_size: 1000
+
+reporting:
+  output_dir: "./reports"
+  formats:
+    - json
+    - markdown
+
+logging:
+  level: "info"
+  format: "json"
+
+database:
+  path: "./data/polymarket.db"
+```
+
+## Environment Variables
+
+```bash
+# Required
+export DOMINION_API_TOKEN=dom_xxx
+
+# Optional overrides
+export LOG_LEVEL=debug
+export DRY_RUN=false
+```
+
+## Config Loading Order
+
+1. Default values (in code)
+2. Config file (`pm.config.yaml`)
+3. Environment variables (override)
+4. CLI flags (highest priority)
+
+Example:
+```bash
+# Config file says dry_run: true
+# But CLI flag overrides:
+dominion-pm run workflow --approve
+```
+
+## Config Sections
+
+### `general`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `name` | string | "dominion" | Project name |
+| `dry_run` | boolean | true | Simulate by default |
+
+### `gateway`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `url` | string | (production URL) | Gateway endpoint |
+
+### `provider`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `default` | string | "openai" | Default LLM provider |
+| `openai.model` | string | "gpt-4o-mini" | OpenAI model |
+| `openai.temperature` | number | 0.2 | Sampling temperature |
+| `anthropic.model` | string | "claude-3-5-sonnet" | Anthropic model |
+
+### `polymarket`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `api_url` | string | (Polymarket URL) | API endpoint |
+| `rate_limit` | number | 10 | Max requests/second |
+
+### `scoring`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `min_volume` | number | 1000 | Min 24h volume |
+| `min_liquidity` | number | 500 | Min liquidity |
+| `max_spread` | number | 0.10 | Max bid-ask spread |
+
+### `simulation`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `default_scenarios` | number | 3 | Number of scenarios |
+| `max_position_size` | number | 1000 | Max simulated position |
+
+### `reporting`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `output_dir` | string | "./reports" | Report directory |
+| `formats` | string[] | ["json", "md"] | Output formats |
+
+### `logging`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `level` | string | "info" | Log level |
+| `format` | string | "json" | Log format |
+
+### `database`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `path` | string | "./data/pm.db" | SQLite path |
+
+## Validation
+
+Config is validated at startup using Zod schemas. Invalid config fails fast with clear error messages:
+
+```
+Error: Invalid configuration
+  - provider.default: Expected 'openai' | 'anthropic' | 'stub', got 'invalid'
+  - scoring.min_volume: Expected number, got string
+```
+
+## Example Configs
+
+### Development
+
+```yaml
+general:
+  name: "dev"
+  dry_run: true
+
+provider:
+  default: "stub"  # No real API calls
+
+logging:
+  level: "debug"
+
+database:
+  path: ":memory:"  # In-memory for testing
+```
+
+### Production
+
+```yaml
+general:
+  name: "prod"
+  dry_run: true  # Still safe by default
+
+provider:
+  default: "openai"
+  openai:
+    model: "gpt-4o"  # Better model
+
+logging:
+  level: "info"
+  format: "json"
+```
+

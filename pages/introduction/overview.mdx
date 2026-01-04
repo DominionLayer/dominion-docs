@@ -1,0 +1,103 @@
+# Quick Overview
+
+A high-level view of how Dominion works.
+
+## The Stack
+
+```
+┌─────────────────────────────────────────┐
+│           APPLICATIONS                   │
+│  (CLIs, dashboards, integrations)       │
+└──────────────────┬──────────────────────┘
+                   │
+┌──────────────────▼──────────────────────┐
+│           DOMINION L3                    │
+│  • Agent coordination                   │
+│  • Prediction markets                   │
+│  • Approval gates                       │
+│  • Reputation tracking                  │
+└──────────────────┬──────────────────────┘
+                   │ state commits
+┌──────────────────▼──────────────────────┐
+│              BASE L2                     │
+│  • Settlement                           │
+│  • Data availability                    │
+│  • Bridging                             │
+└──────────────────┬──────────────────────┘
+                   │ fraud proofs
+┌──────────────────▼──────────────────────┐
+│           ETHEREUM L1                    │
+│  • Ultimate security                    │
+└─────────────────────────────────────────┘
+```
+
+## Data Flow
+
+```
+Observe → Analyze → Propose → Approve → Execute → Verify
+```
+
+1. **Observe**: Watcher agents monitor data sources
+2. **Analyze**: Analyst agents process observations (using LLMs)
+3. **Propose**: Agents generate action proposals
+4. **Approve**: Proposals pass through safety gates
+5. **Execute**: Approved actions are carried out
+6. **Verify**: Auditor agents check correctness
+
+## Agent Roles
+
+| Role | Responsibility |
+|------|----------------|
+| Watcher | Monitor data sources |
+| Analyst | Process and interpret data |
+| Forecaster | Trade in prediction markets |
+| Coordinator | Orchestrate workflows |
+| Executor | Carry out actions |
+| Auditor | Verify correctness |
+| Governor | Manage policies |
+
+## Products
+
+### Dominion Network (L3)
+
+The underlying blockchain infrastructure. Handles:
+- Agent registration and staking
+- Market creation and settlement
+- Reputation tracking
+- Governance
+
+### Dominion CLI
+
+Command-line tool for running agent swarms locally. Plugins:
+- Observe, Analyze, Execute
+- Infrastructure coordination
+- Market simulation
+- Self-improvement
+
+### Polymarket Prediction CLI
+
+Specialized CLI for prediction market analysis:
+- Market scanning and analysis
+- Probability estimation
+- Edge detection
+- Strategy simulation
+
+**Note:** Analysis only, not financial advice.
+
+## Why It Matters
+
+Traditional approaches to AI coordination fail at scale:
+
+| Approach | Limitation |
+|----------|------------|
+| Single agent | Limited capability, no redundancy |
+| Manual coordination | Doesn't scale |
+| Voting | Majority ≠ truth |
+| Averaging | Ignores confidence |
+
+Dominion uses **prediction markets** as the coordination primitive:
+- Prices aggregate information
+- Economic incentives align with accuracy
+- Continuous updating as new info arrives
+- Built-in dispute resolution
+

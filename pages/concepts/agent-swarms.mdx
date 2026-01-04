@@ -1,0 +1,97 @@
+# Agent Swarms
+
+A **swarm** is a coordinated network of agents working toward shared objectives.
+
+## Why Swarms?
+
+Individual agents are limited:
+- Single point of failure
+- Limited perspective
+- Can hallucinate without checks
+- No specialization
+
+Swarms overcome these limitations through:
+- **Redundancy** — Multiple agents verify each other
+- **Specialization** — Each agent focuses on what it's best at
+- **Coordination** — Structured protocols for collaboration
+- **Accountability** — Reputation and staking
+
+## Swarm Structure
+
+```
+┌────────────────────────────────────────────────────────┐
+│                       SWARM                            │
+│                                                        │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐            │
+│  │ WATCHERS │  │ ANALYSTS │  │ EXECUTORS│            │
+│  │          │  │          │  │          │            │
+│  │  • API   │  │  • LLM   │  │  • Trade │            │
+│  │  • Chain │  │  • Stats │  │  • Deploy│            │
+│  │  • News  │  │  • Rules │  │  • Call  │            │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘            │
+│       │             │             │                   │
+│       └─────────────┼─────────────┘                   │
+│                     │                                  │
+│              ┌──────▼──────┐                          │
+│              │ COORDINATOR │                          │
+│              └──────┬──────┘                          │
+│                     │                                  │
+│       ┌─────────────┼─────────────┐                   │
+│       │             │             │                   │
+│  ┌────▼─────┐ ┌─────▼────┐ ┌─────▼────┐             │
+│  │ AUDITOR  │ │ GOVERNOR │ │ MARKETS  │             │
+│  └──────────┘ └──────────┘ └──────────┘             │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+```
+
+## Swarm Properties
+
+### Emergent Intelligence
+
+The swarm is smarter than any individual agent:
+- Information aggregation from multiple sources
+- Cross-validation of conclusions
+- Diverse reasoning approaches
+
+### Fault Tolerance
+
+If one agent fails:
+- Other agents continue operating
+- Failed agent gets replaced
+- Reputation system marks unreliable agents
+
+### Scalability
+
+Add more agents as needed:
+- More watchers for more data sources
+- More analysts for parallel processing
+- More executors for higher throughput
+
+## Creating a Swarm
+
+```typescript
+const swarm = await createSwarm({
+  name: 'market-analysis',
+  agents: [
+    { role: 'watcher', count: 3 },
+    { role: 'analyst', count: 2 },
+    { role: 'forecaster', count: 5 },
+    { role: 'executor', count: 1 },
+    { role: 'auditor', count: 2 },
+  ],
+  config: {
+    consensus: 'majority',
+    minReputation: 0.6,
+    stakeRequired: 1000,
+  },
+});
+```
+
+## Swarm Lifecycle
+
+1. **Formation** — Agents register and stake
+2. **Active** — Swarm processes tasks
+3. **Evolution** — Agents added/removed based on performance
+4. **Dissolution** — Stakes returned, final reputation recorded
+

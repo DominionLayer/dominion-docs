@@ -1,0 +1,194 @@
+# Data Flow
+
+How data moves through the Dominion system.
+
+## Core Flow
+
+```
+Observe → Analyze → Propose → Approve → Execute → Verify
+```
+
+![Data Flow](/data-flow.svg)
+
+## Stage Details
+
+### 1. Observe
+
+**Input:** External data sources (APIs, chains, feeds)
+
+**Process:**
+```typescript
+const observation = await watcher.observe({
+  source: 'polymarket',
+  filter: { volume_min: 1000 },
+});
+```
+
+**Output:** Structured observations
+
+```json
+{
+  "type": "market_update",
+  "source": "polymarket",
+  "data": {
+    "market_id": "...",
+    "price": 0.62,
+    "volume_24h": 150000
+  },
+  "timestamp": "2026-01-04T12:00:00Z"
+}
+```
+
+### 2. Analyze
+
+**Input:** Observations from watchers
+
+**Process:**
+```typescript
+const analysis = await analyst.analyze(observation, {
+  provider: 'openai',
+  model: 'gpt-4o',
+});
+```
+
+**Output:** Analysis results
+
+```json
+{
+  "observation_id": "...",
+  "estimated_probability": 0.68,
+  "confidence": 0.72,
+  "key_factors": ["..."],
+  "assumptions": ["..."],
+  "failure_modes": ["..."]
+}
+```
+
+### 3. Propose
+
+**Input:** Analysis results
+
+**Process:**
+```typescript
+const proposal = await coordinator.propose({
+  action: 'trade',
+  parameters: {
+    market: 'eth_jan_2026',
+    side: 'YES',
+    size: 100,
+    max_price: 0.68,
+  },
+  rationale: analysis,
+});
+```
+
+**Output:** Proposal record
+
+```json
+{
+  "proposal_id": "prop_abc123",
+  "action": "trade",
+  "parameters": {...},
+  "proposer": "agent_xyz",
+  "status": "pending"
+}
+```
+
+### 4. Approve
+
+**Input:** Proposals
+
+**Process:**
+```typescript
+const approval = await gatekeeper.evaluate(proposal, {
+  gates: ['policy', 'risk', 'rate', 'auditor'],
+});
+```
+
+**Output:** Approval or rejection
+
+```json
+{
+  "proposal_id": "prop_abc123",
+  "status": "approved",
+  "gates": [
+    { "name": "policy", "passed": true },
+    { "name": "risk", "passed": true },
+    { "name": "rate", "passed": true },
+    { "name": "auditor", "passed": true }
+  ],
+  "receipt": "signed_receipt_hash"
+}
+```
+
+### 5. Execute
+
+**Input:** Approved proposals with receipts
+
+**Process:**
+```typescript
+const execution = await executor.execute(proposal, receipt);
+```
+
+**Output:** Execution result
+
+```json
+{
+  "execution_id": "exec_def456",
+  "proposal_id": "prop_abc123",
+  "status": "completed",
+  "result": {
+    "tx_hash": "0x...",
+    "shares_bought": 100,
+    "average_price": 0.63
+  }
+}
+```
+
+### 6. Verify
+
+**Input:** Execution records
+
+**Process:**
+```typescript
+const verification = await auditor.verify(execution);
+```
+
+**Output:** Verification result
+
+```json
+{
+  "execution_id": "exec_def456",
+  "verified": true,
+  "checks": {
+    "matches_proposal": true,
+    "result_valid": true,
+    "no_anomalies": true
+  }
+}
+```
+
+## Data Storage
+
+| Data | Storage | Retention |
+|------|---------|-----------|
+| Observations | SQLite/Postgres | 90 days |
+| Analyses | SQLite/Postgres | 90 days |
+| Proposals | L3 + DB | Permanent |
+| Approvals | L3 | Permanent |
+| Executions | L3 + DB | Permanent |
+| Verifications | L3 | Permanent |
+
+## Failure Handling
+
+At each stage, failures are handled:
+
+| Stage | Failure | Response |
+|-------|---------|----------|
+| Observe | Source unavailable | Retry with backoff |
+| Analyze | LLM error | Fallback to baseline |
+| Propose | Invalid params | Reject with reason |
+| Approve | Gate failure | Block execution |
+| Execute | Tx failure | Record failure |
+| Verify | Discrepancy | Raise alert |
+

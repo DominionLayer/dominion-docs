@@ -1,0 +1,135 @@
+# Agent Roles
+
+Each agent in a swarm has a defined role with specific responsibilities.
+
+## Core Roles
+
+### Watcher
+
+**Purpose:** Monitor data sources and generate observations.
+
+**Responsibilities:**
+- Connect to APIs, chains, feeds
+- Detect relevant events
+- Format observations for analysts
+
+**Example:**
+```typescript
+class PriceWatcher extends Agent {
+  role = 'watcher';
+  
+  async watch() {
+    const price = await fetchPrice('ETH');
+    if (this.isSignificantChange(price)) {
+      this.emit('observation', {
+        type: 'price_change',
+        asset: 'ETH',
+        value: price,
+      });
+    }
+  }
+}
+```
+
+### Analyst
+
+**Purpose:** Process observations and generate insights.
+
+**Responsibilities:**
+- Interpret raw data
+- Apply models (LLM, statistical, rule-based)
+- Produce structured analysis
+
+**Example:**
+```typescript
+class MarketAnalyst extends Agent {
+  role = 'analyst';
+  
+  async analyze(observation: Observation) {
+    const context = await this.gatherContext(observation);
+    const analysis = await this.llm.complete({
+      prompt: buildAnalysisPrompt(observation, context),
+      schema: AnalysisOutputSchema,
+    });
+    return analysis;
+  }
+}
+```
+
+### Forecaster
+
+**Purpose:** Make predictions and trade in markets.
+
+**Responsibilities:**
+- Estimate probabilities
+- Identify edge
+- Trade based on beliefs
+
+### Coordinator
+
+**Purpose:** Orchestrate workflows across agents.
+
+**Responsibilities:**
+- Assign tasks
+- Manage dependencies
+- Handle failures
+- Aggregate results
+
+### Executor
+
+**Purpose:** Carry out approved actions.
+
+**Responsibilities:**
+- Submit transactions
+- Call external APIs
+- Deploy contracts
+- Execute trades
+
+### Auditor
+
+**Purpose:** Verify correctness and detect manipulation.
+
+**Responsibilities:**
+- Check execution matches proposal
+- Cross-validate data
+- Detect anomalies
+- Raise disputes
+
+### Governor
+
+**Purpose:** Manage policies and permissions.
+
+**Responsibilities:**
+- Set swarm parameters
+- Approve high-stakes actions
+- Resolve disputes
+- Manage membership
+
+## Role Matrix
+
+| Role | Reads | Writes | Stakes | Earns |
+|------|-------|--------|--------|-------|
+| Watcher | External data | Observations | Low | Per observation |
+| Analyst | Observations | Analyses | Medium | Per analysis |
+| Forecaster | Markets | Trades | High | Trading P&L |
+| Coordinator | All | Tasks | Medium | Per workflow |
+| Executor | Proposals | Executions | High | Per execution |
+| Auditor | Executions | Audits | Medium | Per audit + bounties |
+| Governor | Policies | Policies | Highest | Governance rewards |
+
+## Multi-Role Agents
+
+Agents can hold multiple roles:
+
+```typescript
+const agent = new Agent({
+  roles: ['watcher', 'analyst'],
+  stake: 2000,  // Combined stake
+});
+```
+
+But separation often improves:
+- Specialization
+- Accountability
+- Security (principle of least privilege)
+

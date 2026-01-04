@@ -1,0 +1,148 @@
+# LLM Providers
+
+How Dominion handles LLM access through the Gateway.
+
+## Overview
+
+Users don't need their own OpenAI/Anthropic API keys. All LLM calls go through the Dominion Gateway.
+
+## Architecture
+
+```
+User (with DOMINION_API_TOKEN)
+         │
+         ▼
+┌─────────────────────┐
+│   Dominion CLI      │
+│   GatewayProvider   │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Dominion Gateway   │
+│  • Auth             │
+│  • Rate limiting    │
+│  • Usage tracking   │
+└─────────┬───────────┘
+          │
+    ┌─────┴─────┐
+    ▼           ▼
+┌───────┐  ┌──────────┐
+│OpenAI │  │Anthropic │
+└───────┘  └──────────┘
+```
+
+## Setup
+
+Users only need one environment variable:
+
+```bash
+export DOMINION_API_TOKEN=dom_your_token_here
+```
+
+That's it. No OpenAI key, no Anthropic key.
+
+## Checking Quota
+
+```bash
+dominion-pm whoami
+```
+
+Output:
+```
+User ID: user_abc123
+Daily Requests: 50/1000 (950 remaining)
+Daily Tokens: 25K/100K (75K remaining)
+Monthly Spend: $2.50/$50.00
+```
+
+## Provider Types
+
+### GatewayProvider (Default)
+
+Routes through Dominion Gateway. Recommended for most users.
+
+### StubProvider (Testing)
+
+Returns mock responses. No API calls.
+
+```yaml
+provider:
+  default: "stub"
+```
+
+## Available Models
+
+| Provider | Models |
+|----------|--------|
+| OpenAI | gpt-4o, gpt-4o-mini, gpt-4-turbo |
+| Anthropic | claude-3-5-sonnet, claude-3-opus, claude-3-haiku |
+
+## Rate Limits
+
+| Limit | Default |
+|-------|---------|
+| Daily requests | 1,000 |
+| Daily tokens | 100,000 |
+| Monthly spend | $50 |
+| Concurrent requests | 5 |
+
+## Self-Hosting the Gateway
+
+For teams that want their own gateway:
+
+### 1. Clone
+
+```bash
+git clone https://github.com/DominionLayer/dominion-server
+cd dominion-server
+```
+
+### 2. Configure
+
+```bash
+cp env.example .env
+# Edit with your OpenAI/Anthropic keys
+```
+
+### 3. Deploy
+
+```bash
+# Docker
+docker-compose up -d
+
+# Or Railway
+railway up
+```
+
+### 4. Create Users
+
+```bash
+curl -X POST http://localhost:3100/admin/users \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
+  -d '{"name": "User", "email": "user@example.com"}'
+```
+
+### 5. Distribute Tokens
+
+Give users their `dom_xxx` tokens to use with the CLI.
+
+## Implementing Custom Providers
+
+```typescript
+import { LLMProvider, LLMResponse } from '@dominion/core';
+
+export class MyProvider implements LLMProvider {
+  name = 'my-provider';
+
+  async complete(options: CompletionOptions): Promise<LLMResponse> {
+    const response = await fetch('https://my-llm.com/complete', {
+      method: 'POST',
+      body: JSON.stringify(options),
+    });
+    
+    return response.json();
+  }
+}
+```
+

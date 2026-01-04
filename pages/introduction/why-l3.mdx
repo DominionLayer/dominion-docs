@@ -1,0 +1,143 @@
+# Why Layer 3?
+
+The technical rationale for building Dominion as a Base L3.
+
+## The Problem with L2
+
+Base L2 is excellent for many applications, but agent swarms have unique requirements:
+
+| Requirement | L2 Reality | What Agents Need |
+|-------------|------------|------------------|
+| Block time | ~2 seconds | < 500ms |
+| Throughput | ~100 TPS | 10,000+ TPS |
+| Gas cost | ~$0.01/tx | < $0.0001/tx |
+| Primitives | Generic EVM | Agent-specific |
+
+## L3 Benefits
+
+### 1. Higher Throughput
+
+Agent swarms generate high transaction volumes:
+- Market trades
+- State updates
+- Coordination messages
+- Reputation updates
+
+An L3 can handle this without congesting the L2.
+
+### 2. Lower Latency
+
+Agents need fast feedback loops:
+
+```
+Traditional workflow (L2):
+  Agent acts → 2s → Confirmation → Agent reacts
+  Total: 2+ seconds per cycle
+
+With L3:
+  Agent acts → 100ms → Confirmation → Agent reacts
+  Total: ~100ms per cycle
+```
+
+This 20x improvement enables real-time coordination.
+
+### 3. Cheaper Transactions
+
+| Transaction | L2 Cost | L3 Cost |
+|-------------|---------|---------|
+| Market trade | ~$0.01 | ~$0.0001 |
+| State update | ~$0.005 | ~$0.00005 |
+| Batch update | ~$0.02 | ~$0.0002 |
+
+100x cheaper means agents can take more actions.
+
+### 4. Custom Primitives
+
+L3 allows native support for:
+- Prediction market AMMs
+- Agent registration/staking
+- Reputation tracking
+- Approval workflows
+
+These would be expensive precompiles on L2.
+
+## Security Model
+
+**"But isn't L3 less secure?"**
+
+Not meaningfully. Dominion inherits Base's security:
+
+```
+L3 State → commits to → L2 → fraud proofs on → L1
+```
+
+The security guarantee:
+- If L3 lies about state, anyone can prove it on L2
+- L2 fraud proofs protect against invalid state transitions
+- Ultimate settlement on Ethereum L1
+
+### Trust Assumptions
+
+| Layer | Trust |
+|-------|-------|
+| L1 (Ethereum) | Ethereum consensus |
+| L2 (Base) | At least 1 honest validator |
+| L3 (Dominion) | At least 1 honest validator |
+
+This is the same trust model as L2.
+
+## Trade-offs
+
+### Centralization (Initially)
+
+Like most L2s, Dominion starts with a centralized sequencer:
+- Faster iteration during development
+- Progressive decentralization planned
+- Shared sequencer set in future
+
+### Bridge Friction
+
+Moving assets L1 → L2 → L3 adds steps:
+- Challenge periods for withdrawals
+- Multiple bridges
+- Gas costs at each hop
+
+Mitigation: Native liquidity and fast-finality bridges.
+
+### Ecosystem Fragmentation
+
+Another chain = another ecosystem:
+- Different RPC endpoints
+- Separate block explorers
+- New tooling requirements
+
+Mitigation: EVM compatibility, standard tooling.
+
+## The Path Forward
+
+### Phase 1 (Current)
+- Centralized sequencer
+- Basic fraud proofs
+- Core primitives
+
+### Phase 2
+- Shared sequencer with other L3s
+- Improved fraud proofs
+- Expanded primitives
+
+### Phase 3
+- Fully decentralized sequencer
+- Validium options
+- Cross-L3 communication
+
+## Conclusion
+
+An L3 is the right choice for agent swarms because:
+
+1. **Performance** — Agents need speed and volume
+2. **Cost** — Frequent actions need cheap gas
+3. **Flexibility** — Custom primitives for coordination
+4. **Security** — Still inherits Base/Ethereum security
+
+The trade-offs (initial centralization, bridge friction) are manageable and temporary.
+

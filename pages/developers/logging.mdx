@@ -1,0 +1,152 @@
+# Logging & Reports
+
+Comprehensive logging for debugging and audit trails.
+
+## Log Format
+
+All logs are structured JSON:
+
+```json
+{
+  "timestamp": "2026-01-04T12:00:00.000Z",
+  "level": "info",
+  "message": "Analysis completed",
+  "context": {
+    "run_id": "run_abc123",
+    "market_id": "eth_jan_2026",
+    "duration_ms": 1250
+  }
+}
+```
+
+## Log Levels
+
+| Level | Use |
+|-------|-----|
+| `debug` | Detailed debugging |
+| `info` | Normal operations |
+| `warn` | Potential issues |
+| `error` | Errors requiring attention |
+
+## Configuration
+
+```yaml
+logging:
+  level: "info"
+  format: "json"
+  file: "./logs/dominion.log"
+```
+
+Environment override:
+```bash
+export LOG_LEVEL=debug
+```
+
+## Run IDs
+
+Every session has a unique `run_id`:
+
+```
+run_2026-01-04T12-00-00-abc123
+```
+
+Use run IDs to:
+- Correlate logs
+- Reproduce analyses
+- Generate reports
+
+## Finding Runs
+
+```bash
+dominion-pm report --list
+```
+
+Output:
+```
+run_2026-01-04T12-00-00-abc123  analyze  completed
+run_2026-01-04T11-30-00-def456  scan     completed
+```
+
+## Reports
+
+### Generating Reports
+
+```bash
+# During analysis
+dominion-pm analyze <market_id> --report
+
+# From run ID
+dominion-pm report run_abc123
+
+# Latest run
+dominion-pm report latest
+```
+
+### Report Location
+
+```
+reports/
+├── analysis-2026-01-04T12-00-00.json
+├── analysis-2026-01-04T12-00-00.md
+└── ...
+```
+
+### JSON Structure
+
+```json
+{
+  "meta": {
+    "run_id": "run_abc123",
+    "type": "analysis",
+    "timestamp": "2026-01-04T12:00:00Z"
+  },
+  "output": {
+    "estimated_probability": 0.68,
+    "confidence": 0.72,
+    "edge": 0.06
+  },
+  "disclaimer": "This is analysis only, not financial advice."
+}
+```
+
+## Database Logging
+
+Operations are persisted to SQLite:
+
+```bash
+# Query history
+dominion-pm history --market <id>
+dominion-pm history --days 7
+```
+
+## Audit Trail
+
+Every action has an audit entry:
+
+```json
+{
+  "audit_id": "audit_xyz",
+  "run_id": "run_abc123",
+  "action": "llm_complete",
+  "input": {
+    "provider": "openai",
+    "model": "gpt-4o-mini",
+    "message_count": 2
+  },
+  "output": {
+    "tokens_used": 1250,
+    "latency_ms": 850
+  }
+}
+```
+
+## Privacy
+
+Prompt contents are **not logged** by default. Only metadata is stored.
+
+To enable full logging (dev only):
+```yaml
+logging:
+  include_prompts: true  # NOT for production
+```
+

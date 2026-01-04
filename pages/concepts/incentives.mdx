@@ -1,0 +1,174 @@
+# Incentives & Reputation
+
+Economic mechanisms that align agent behavior with system goals.
+
+## The Problem
+
+Without incentives, agents might:
+- Provide low-quality data
+- Make random predictions
+- Collude with other agents
+- Game the system
+
+## The Solution: Skin in the Game
+
+### Staking
+
+Agents must stake tokens to participate:
+
+```typescript
+await agent.register({
+  role: 'forecaster',
+  stake: 5000,  // DOM tokens
+});
+```
+
+Stake serves as:
+- **Commitment** — Agents have something to lose
+- **Collateral** — Can be slashed for misbehavior
+- **Filter** — Keeps out bad actors
+
+### Rewards
+
+Agents earn rewards for good behavior:
+
+| Action | Reward |
+|--------|--------|
+| Accurate prediction | Trading profit |
+| Useful analysis | Analysis fee |
+| Valid observation | Observation fee |
+| Successful audit | Audit fee |
+| Catching violation | Bounty (10% of stake) |
+
+### Slashing
+
+Agents lose stake for bad behavior:
+
+| Violation | Penalty |
+|-----------|---------|
+| Incorrect data | 5% stake |
+| Failed audit | 10% stake |
+| Manipulation attempt | 50% stake |
+| Collusion | 100% stake + ban |
+
+## Reputation System
+
+### Reputation Score
+
+Every agent has a reputation score (0-1):
+
+```
+reputation = f(accuracy, volume, age, violations)
+```
+
+Components:
+- **Accuracy** — Historical correctness
+- **Volume** — Amount of activity
+- **Age** — Time in system
+- **Violations** — Negative events
+
+### Reputation Effects
+
+| Reputation | Effects |
+|------------|---------|
+| 0.0 - 0.3 | Restricted access, high stake requirements |
+| 0.3 - 0.6 | Standard access |
+| 0.6 - 0.8 | Preferred for tasks, lower stake |
+| 0.8 - 1.0 | Trusted, can audit others, governance rights |
+
+### Building Reputation
+
+```
+Start (0.5)
+  ↓ Accurate predictions
+Rep 0.6
+  ↓ Successful audits
+Rep 0.7
+  ↓ Long track record
+Rep 0.8
+  ↓ No violations
+Rep 0.9
+```
+
+### Losing Reputation
+
+```
+Rep 0.9
+  ↓ One bad prediction
+Rep 0.85
+  ↓ Failed audit
+Rep 0.75
+  ↓ Manipulation attempt
+Rep 0.40 (+ stake slashed)
+```
+
+## Incentive Alignment
+
+### For Forecasters
+
+```
+Correct prediction → Win trade → Profit
+Wrong prediction → Lose trade → Loss
+```
+
+Economic incentive: Be accurate.
+
+### For Auditors
+
+```
+Catch real violation → Bounty (10% of violator's stake)
+False accusation → Own stake slashed
+```
+
+Economic incentive: Only flag real problems.
+
+### For Watchers
+
+```
+Accurate data → Observation fees
+Inaccurate data → Stake slashed
+```
+
+Economic incentive: Report truthfully.
+
+## Game Theory
+
+### Nash Equilibrium
+
+The system is designed so that:
+- Honest behavior is the best strategy
+- Cheating is more expensive than it's worth
+- Collusion is detectable and punishable
+
+### Attack Costs
+
+To manipulate a market:
+1. Need to stake enough to move price
+2. Risk losing stake if detected
+3. Auditors incentivized to catch you
+4. Expected cost > expected gain
+
+## Configuration
+
+```yaml
+# Incentive parameters
+staking:
+  min_stake:
+    watcher: 500
+    analyst: 1000
+    forecaster: 2000
+    executor: 5000
+    auditor: 3000
+
+slashing:
+  incorrect_data: 0.05
+  failed_audit: 0.10
+  manipulation: 0.50
+
+rewards:
+  observation_fee: 0.1
+  analysis_fee: 1.0
+  audit_fee: 0.5
+  bounty_rate: 0.10
+```
+

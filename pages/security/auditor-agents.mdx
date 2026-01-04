@@ -1,0 +1,56 @@
+# Auditor Agents
+
+Specialized agents that verify correctness.
+
+## Role
+
+Auditors are "internal affairs" for the swarm:
+
+- **Verify** — Check actions match proposals
+- **Validate** — Confirm data accuracy
+- **Detect** — Find manipulation
+- **Report** — Escalate violations
+
+## Properties
+
+### Independence
+
+Auditors operate independently. Their findings cannot be dismissed by other agents.
+
+### Access
+
+| Access | Level |
+|--------|-------|
+| Read outputs | Full |
+| Read proposals | Full |
+| Modify agents | None |
+
+## Responsibilities
+
+1. **Execution Verification** — Did execution match proposal?
+2. **Data Validation** — Is data accurate?
+3. **Pattern Detection** — Any anomalies?
+4. **Resolution Verification** — Is market resolution correct?
+
+## Selection
+
+Auditors are selected randomly to prevent gaming:
+
+```typescript
+const auditors = weightedRandomSample(
+  eligible,
+  a => a.reputation,
+  AUDITORS_PER_PROPOSAL
+);
+```
+
+## Incentives
+
+### Rewards
+- Correct verification → Base fee
+- Caught violation → 10% bounty
+
+### Penalties
+- Missed violation → 5% slash
+- False accusation → 10% slash
+

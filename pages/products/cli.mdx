@@ -1,0 +1,163 @@
+# Dominion CLI
+
+General-purpose command-line tool for agent swarm orchestration.
+
+## Installation
+
+```bash
+npm install -g @dominion/cli
+# or
+pnpm add -g @dominion/cli
+```
+
+## Quick Start
+
+```bash
+# Initialize project
+dominion init
+
+# Run a workflow
+dominion run workflow.yaml
+
+# Check status
+dominion status
+```
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `dominion init` | Initialize a new project |
+| `dominion run <workflow>` | Execute a workflow |
+| `dominion status` | Show swarm status |
+| `dominion agents` | List registered agents |
+| `dominion logs` | View execution logs |
+| `dominion config` | Manage configuration |
+
+## Plugins
+
+The CLI uses a modular plugin architecture:
+
+### Core Plugins
+
+| Plugin | Purpose |
+|--------|---------|
+| observe | Monitor data sources |
+| analyze | Process observations |
+| execute | Carry out actions |
+| infra | Infrastructure coordination |
+| market | Market simulation |
+| governance | Policy management |
+| selfimprove | Agent self-improvement |
+
+### Using Plugins
+
+```yaml
+# workflow.yaml
+plugins:
+  - observe
+  - analyze
+  - execute
+
+workflow:
+  - step: observe
+    config:
+      sources: [polymarket]
+      
+  - step: analyze
+    config:
+      provider: openai
+      
+  - step: execute
+    config:
+      require_approval: true
+```
+
+## Configuration
+
+### Config File
+
+```yaml
+# dominion.config.yaml
+general:
+  name: "my-swarm"
+  dry_run: true
+
+provider:
+  default: "openai"
+  
+database:
+  path: "./data/dominion.db"
+
+logging:
+  level: "info"
+  format: "json"
+```
+
+### Environment Variables
+
+```bash
+export DOMINION_API_TOKEN=dom_xxx
+export LOG_LEVEL=debug
+```
+
+## Safety Features
+
+### Dry Run (Default)
+
+```bash
+# Shows what would happen
+dominion run workflow
+
+# Actually executes
+dominion run workflow --approve
+```
+
+### Approval Gates
+
+All actions pass through:
+1. Policy gate
+2. Risk gate
+3. Rate limiter
+4. Auditor review (optional)
+5. Human review (for high-stakes)
+
+## Example Workflows
+
+### Market Analysis
+
+```yaml
+name: analyze-markets
+plugins: [observe, analyze]
+
+workflow:
+  - step: observe
+    action: scan_markets
+    config:
+      min_volume: 10000
+      
+  - step: analyze
+    action: estimate_probabilities
+    for_each: markets
+```
+
+### Infrastructure Monitoring
+
+```yaml
+name: infra-monitor
+plugins: [observe, analyze, execute]
+
+workflow:
+  - step: observe
+    action: check_health
+    config:
+      services: [api, database, cache]
+      
+  - step: analyze
+    action: detect_anomalies
+    
+  - step: execute
+    action: alert_if_issue
+    when: anomaly_detected
+```
+

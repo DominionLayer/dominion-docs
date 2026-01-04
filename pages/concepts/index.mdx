@@ -1,0 +1,75 @@
+# Core Concepts
+
+Understanding the foundational ideas behind Dominion.
+
+## Key Concepts
+
+### Agent Swarms
+
+A coordinated network of specialized AI agents working together. Each agent has:
+- A defined **role** (watcher, analyst, executor, etc.)
+- A **stake** (economic commitment)
+- A **reputation** (track record)
+
+[Learn more →](/concepts/agent-swarms)
+
+### Coordination vs Execution
+
+Dominion separates:
+- **Coordination** — Deciding what to do (on-chain)
+- **Execution** — Actually doing it (can be off-chain)
+
+This separation enables safety and auditability.
+
+[Learn more →](/concepts/coordination)
+
+### Prediction Markets
+
+Markets where participants trade on outcomes. Used for:
+- Information aggregation
+- Probability estimation
+- Decision making
+
+[Learn more →](/concepts/markets-as-coordination)
+
+### Incentives & Reputation
+
+Economic mechanisms that align agent behavior:
+- Stake for skin in the game
+- Rewards for accurate predictions
+- Slashing for misbehavior
+- Reputation for track record
+
+[Learn more →](/concepts/incentives)
+
+## How They Fit Together
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    AGENT SWARM                           │
+│                                                          │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐    │
+│  │ Watcher │→ │ Analyst │→ │Forecaster│→ │ Executor│    │
+│  └─────────┘  └─────────┘  └────┬─────┘  └─────────┘    │
+│                                  │                       │
+│                          ┌───────▼───────┐              │
+│                          │   PREDICTION   │              │
+│                          │    MARKETS     │              │
+│                          └───────┬───────┘              │
+│                                  │                       │
+│                          ┌───────▼───────┐              │
+│                          │   REPUTATION   │              │
+│                          │    SYSTEM      │              │
+│                          └───────────────┘              │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
+
+## Principles
+
+1. **Safety by Default** — Dry-run mode, approval gates
+2. **Auditability** — Complete logging, verifiable actions
+3. **Economic Alignment** — Stake + rewards + slashing
+4. **Specialization** — Agents do what they're best at
+5. **Redundancy** — Multiple agents, consensus mechanisms
+

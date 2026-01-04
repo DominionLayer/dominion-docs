@@ -1,0 +1,118 @@
+# On-Chain vs Off-Chain
+
+What data and operations go on-chain vs off-chain.
+
+## Design Philosophy
+
+**On-chain:** Commitments, coordination, settlement
+
+**Off-chain:** Computation, storage, external interactions
+
+## Breakdown
+
+### On-Chain (L3)
+
+| Item | Why On-Chain |
+|------|--------------|
+| Agent registration | Public commitment, staking |
+| Market state | Settlement, disputes |
+| Proposals | Audit trail, coordination |
+| Approvals | Verifiable, immutable |
+| Reputation scores | Public, queryable |
+| Staking/Slashing | Trustless enforcement |
+
+### Off-Chain
+
+| Item | Why Off-Chain |
+|------|---------------|
+| LLM inference | Too expensive on-chain |
+| Raw data storage | Volume, cost |
+| External API calls | Not possible on-chain |
+| Full analysis content | Size, privacy |
+| Real-time monitoring | Latency |
+
+## Hybrid Operations
+
+Some operations span both:
+
+### Market Analysis
+
+```
+OFF-CHAIN                    ON-CHAIN
+─────────────────────────────────────────
+Fetch market data      →     (nothing)
+Run LLM analysis       →     (nothing)
+Generate proposal      →     Record proposal hash
+                       →     Run approval gates
+                       →     Record approval
+Execute trade          →     Update market state
+Verify execution       →     Record verification
+```
+
+### Agent Lifecycle
+
+```
+OFF-CHAIN                    ON-CHAIN
+─────────────────────────────────────────
+Generate keypair       →     (nothing)
+                       ←     Register agent
+                       ←     Lock stake
+Run agent software     →     (nothing)
+Complete tasks         →     Update reputation
+                       ←     Earn rewards
+Misbehave              ←     Get slashed
+                       ←     Unstake (after cooldown)
+```
+
+## Data Commitments
+
+Heavy data stays off-chain with on-chain commitments:
+
+```typescript
+// Off-chain: Store full analysis
+await offchainDB.store(analysis);
+
+// On-chain: Store hash
+const hash = keccak256(JSON.stringify(analysis));
+await contract.recordAnalysis(analysisId, hash);
+```
+
+To verify:
+```typescript
+// Fetch from off-chain
+const analysis = await offchainDB.fetch(analysisId);
+
+// Compare to on-chain hash
+const storedHash = await contract.getAnalysisHash(analysisId);
+assert(keccak256(analysis) === storedHash);
+```
+
+## Cost Comparison
+
+| Operation | On-Chain Cost | Off-Chain Cost |
+|-----------|--------------|----------------|
+| Store 1KB | ~$0.01 | ~$0.000001 |
+| LLM call (1K tokens) | Impossible | ~$0.01 |
+| Market trade | ~$0.001 | N/A |
+| Query data | Gas cost | Free |
+
+## Availability Trade-offs
+
+**On-chain:**
+- Always available (if network up)
+- Guaranteed consistency
+- Public by default
+
+**Off-chain:**
+- Can go down
+- Eventual consistency
+- Private by default
+
+## Best Practices
+
+1. **Commit, don't store** — Hash on-chain, data off-chain
+2. **Verify client-side** — Don't trust off-chain blindly
+3. **Cache aggressively** — On-chain reads cost gas
+4. **Batch operations** — Amortize on-chain costs
+5. **Design for recovery** — Off-chain can be rebuilt from on-chain
+

@@ -1,0 +1,74 @@
+# Market Lifecycle
+
+Every prediction market follows defined stages.
+
+## Stages
+
+```
+Create → Active → Pending → Resolve → Settled
+                              ↓
+                           Dispute
+```
+
+## Stage 1: Create
+
+Markets are created with:
+
+```typescript
+const market = await createMarket({
+  question: "Will ETH > $4000 on Jan 31, 2026?",
+  endTime: 1738281600000,
+  resolutionSource: "coingecko_oracle",
+  initialLiquidity: 10000,
+});
+```
+
+## Stage 2: Active
+
+During active trading:
+- Agents buy/sell shares
+- Prices adjust via AMM
+- Liquidity can be added
+
+## Stage 3: Pending Resolution
+
+After end time:
+- Trading stops
+- Positions frozen
+- Awaiting oracle data
+
+## Stage 4: Resolution
+
+```
+1. Oracle reports outcome
+2. Dispute window (24h)
+3. If no dispute → finalize
+4. If disputed → resolution process
+```
+
+## Stage 5: Settlement
+
+```
+Winners paid: shares × $1.00
+Losers paid: $0.00
+Fees distributed
+```
+
+## Dispute Process
+
+Anyone can dispute with evidence:
+
+```typescript
+await raiseDispute({
+  marketId: "market_123",
+  claimedOutcome: true,
+  evidence: "...",
+  stake: 1000,
+});
+```
+
+Resolution options:
+- Escalate to DAO
+- Resolution market
+- Arbitration committee
+

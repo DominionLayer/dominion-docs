@@ -1,0 +1,126 @@
+# Quickstart
+
+Get running with Dominion in 5 minutes.
+
+## 1. Install
+
+```bash
+# Using pnpm (recommended)
+pnpm add -g @dominion/polymarket-cli
+
+# Or npm
+npm install -g @dominion/polymarket-cli
+```
+
+## 2. Get a Token
+
+Contact the Dominion team to get a `DOMINION_API_TOKEN`.
+
+Or, if you're self-hosting, create one via the admin API:
+
+```bash
+curl -X POST https://your-gateway/admin/users \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Your Name", "email": "you@example.com"}'
+```
+
+## 3. Configure
+
+```bash
+# Set your token
+export DOMINION_API_TOKEN=dom_your_token_here
+
+# Verify it works
+dominion-pm whoami
+```
+
+Expected output:
+```
+User ID: user_abc123
+Daily Requests: 0/1000 (1000 remaining)
+Daily Tokens: 0/100000 (100000 remaining)
+```
+
+## 4. Scan Markets
+
+```bash
+dominion-pm scan
+```
+
+Output:
+```
+Scanning active markets...
+
+Found 25 markets
+
+Top by Volume:
+  btc_100k      | BTC $100K in 2026?     | $0.45 | $2.1M
+  eth_jan26     | ETH > $4000 Jan 31?    | $0.62 | $150K
+  ...
+```
+
+## 5. Analyze a Market
+
+Pick a market ID from the scan:
+
+```bash
+dominion-pm analyze eth_jan26
+```
+
+Output:
+```
+Analyzing market: eth_jan26
+═══════════════════════════════════════════════════
+
+Question: Will ETH be above $4000 on January 31, 2026?
+Current Price: $0.62 (62% implied)
+
+Model Analysis:
+  Estimated Probability: 68%
+  Confidence: 72%
+  Edge: +6%
+
+Key Factors:
+  • Recent momentum positive
+  • Institutional interest rising
+  ...
+
+⚠️ This is analysis only, not financial advice.
+```
+
+## 6. Simulate a Position
+
+```bash
+dominion-pm simulate eth_jan26 --position YES --size 100
+```
+
+Output:
+```
+Simulation: 100 YES @ $0.62
+═══════════════════════════════════════════════════
+
+Model Probability: 68%
+
+Scenarios:
+  Win:  +$38.00 (+61%)
+  EV:   +$6.00 (+10%)
+  Lose: -$62.00 (-100%)
+
+⚠️ Simulation only. Not financial advice.
+```
+
+## 7. Generate a Report
+
+```bash
+dominion-pm report latest
+```
+
+Creates `./reports/analysis-{timestamp}.md` with full details.
+
+## Next Steps
+
+- [Configuration](/developers/configuration) — Customize settings
+- [LLM Providers](/developers/llm-providers) — Understand the Gateway
+- [Testing](/developers/testing) — Run the test suite
+

@@ -1,0 +1,66 @@
+# Rate Limiting
+
+Preventing abuse through request limits.
+
+## API Limits
+
+| Endpoint | Limit | Window |
+|----------|-------|--------|
+| `/v1/llm/complete` | 60 req | 1 min |
+| `/admin/*` | 30 req | 1 min |
+
+## Agent Limits
+
+| Action | Limit | Window |
+|--------|-------|--------|
+| Trades | 10 | 1 min |
+| Proposals | 5 | 1 min |
+| Analyses | 20 | 1 min |
+
+## Quotas
+
+| Resource | Daily | Monthly |
+|----------|-------|---------|
+| LLM requests | 1,000 | 25,000 |
+| LLM tokens | 100K | 2.5M |
+| Spend | $10 | $50 |
+
+## Exceeded Response
+
+```json
+{
+  "error": "rate_limit_exceeded",
+  "retry_after": 45,
+  "limit": 60,
+  "used": 60
+}
+```
+
+## Backoff Strategy
+
+```typescript
+async function withBackoff(fn) {
+  let attempt = 0;
+  while (true) {
+    try {
+      return await fn();
+    } catch (e) {
+      if (e.status !== 429 || attempt >= 3) throw e;
+      const delay = 1000 * Math.pow(2, attempt);
+      await sleep(delay);
+      attempt++;
+    }
+  }
+}
+```
+
+## Configuration
+
+```yaml
+rate_limits:
+  per_user:
+    requests_per_minute: 60
+  per_ip:
+    requests_per_minute: 10
+```
+

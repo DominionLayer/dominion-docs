@@ -1,0 +1,71 @@
+# Key Management
+
+How credentials are handled securely.
+
+## Architecture
+
+Users don't need LLM API keys. The Gateway handles all provider credentials.
+
+```
+User (dom_xxx token)
+         │
+         ▼
+    ┌─────────┐
+    │ Gateway │ ← Has OpenAI/Anthropic keys
+    └─────────┘
+```
+
+## User API Keys
+
+### Format
+
+```
+dom_[random_32_chars]
+```
+
+### Storage
+
+Keys are **never stored in plaintext**:
+
+```sql
+CREATE TABLE api_keys (
+  key_hash TEXT NOT NULL,  -- argon2 hash
+  key_prefix TEXT NOT NULL -- for lookup
+);
+```
+
+### Verification
+
+```typescript
+async function verifyKey(key: string) {
+  const candidates = await findByPrefix(key.slice(0, 12));
+  for (const c of candidates) {
+    if (await argon2.verify(c.hash, key)) return c.user;
+  }
+  return null;
+}
+```
+
+## Provider Keys
+
+Server-side keys are:
+- Never exposed to users
+- Encrypted at rest
+- Rotated monthly
+
+## Best Practices
+
+### For Users
+
+1. Never share your token
+2. Use environment variables
+3. Rotate if compromised
+4. Monitor usage via `whoami`
+
+### For Operators
+
+1. Hash all keys
+2. Encrypt provider keys
+3. Audit access
+4. Rate limit to prevent brute force
+

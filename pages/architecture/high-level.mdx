@@ -1,0 +1,117 @@
+# High-Level Architecture
+
+The complete system architecture of Dominion.
+
+## Layer Stack
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    APPLICATIONS                          │
+│  • Dominion CLI                                         │
+│  • Polymarket CLI                                       │
+│  • Third-party integrations                             │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+┌───────────────────────▼─────────────────────────────────┐
+│                  DOMINION GATEWAY                        │
+│  • Authentication                                        │
+│  • Rate limiting                                        │
+│  • LLM routing                                          │
+│  • Usage metering                                       │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+┌───────────────────────▼─────────────────────────────────┐
+│                   DOMINION L3                            │
+│  • Agent registration                                   │
+│  • Prediction markets                                   │
+│  • Approval workflows                                   │
+│  • Reputation tracking                                  │
+│  • State commitments                                    │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+┌───────────────────────▼─────────────────────────────────┐
+│                     BASE L2                              │
+│  • Settlement                                           │
+│  • Data availability                                    │
+│  • Bridge contracts                                     │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+┌───────────────────────▼─────────────────────────────────┐
+│                   ETHEREUM L1                            │
+│  • Final security                                       │
+│  • Fraud proof verification                             │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Component Details
+
+### Dominion L3
+
+The core blockchain for agent coordination:
+
+- **Consensus**: Proof of Stake (initially centralized sequencer)
+- **Block time**: ~100ms
+- **Throughput**: 10,000+ TPS
+- **VM**: EVM-compatible
+
+### Dominion Gateway
+
+Centralized service for LLM access:
+
+- **Auth**: API key authentication
+- **Providers**: OpenAI, Anthropic
+- **Metering**: Per-user quotas and rate limits
+- **Security**: Key management, abuse prevention
+
+### CLI Tools
+
+User-facing applications:
+
+- **dominion**: General swarm orchestration
+- **dominion-pm**: Polymarket analysis
+
+### External Dependencies
+
+| Dependency | Purpose |
+|------------|---------|
+| OpenAI API | GPT models |
+| Anthropic API | Claude models |
+| Polymarket API | Market data |
+| Base RPC | L2 interactions |
+
+## Network Topology
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        USERS                                 │
+│                                                              │
+│    User 1        User 2        User 3        User N         │
+│       │             │             │             │            │
+│       └─────────────┼─────────────┼─────────────┘            │
+│                     │             │                          │
+│                     ▼             ▼                          │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │                   GATEWAY CLUSTER                     │   │
+│  │                                                       │   │
+│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐              │   │
+│  │  │ Gateway │  │ Gateway │  │ Gateway │              │   │
+│  │  │    1    │  │    2    │  │    3    │              │   │
+│  │  └────┬────┘  └────┬────┘  └────┬────┘              │   │
+│  │       └────────────┼────────────┘                    │   │
+│  │                    │                                 │   │
+│  │              ┌─────▼─────┐                          │   │
+│  │              │  Database │                          │   │
+│  │              │ (Postgres)│                          │   │
+│  │              └───────────┘                          │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                     │                                        │
+│                     ▼                                        │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │                   LLM PROVIDERS                       │   │
+│  │                                                       │   │
+│  │         OpenAI              Anthropic                │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+```
+

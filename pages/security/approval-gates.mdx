@@ -1,0 +1,72 @@
+# Approval Gates
+
+Checkpoints that all agent actions must pass.
+
+## Pipeline
+
+```
+Proposal → Gate 1 → Gate 2 → Gate 3 → Execute
+              │         │         │
+              ▼         ▼         ▼
+           Policy     Risk     Human
+```
+
+Any gate can reject → execution blocked.
+
+## Gate Types
+
+### Policy Gate
+
+Checks rules and constraints:
+- Allowed actions
+- Allowed targets
+- Time restrictions
+
+### Risk Gate
+
+Evaluates risk parameters:
+- Position limits
+- Exposure limits
+- VaR calculations
+
+### Rate Gate
+
+Prevents excessive activity:
+- Actions per minute
+- Actions per hour
+
+### Auditor Gate
+
+Cross-validation by auditors:
+- Majority approval required
+
+### Human Gate
+
+Manual review for high-stakes:
+- Above threshold value
+- Flagged for review
+
+## Dry Run Mode
+
+Default: all actions are simulated.
+
+```bash
+dominion run workflow          # Simulates
+dominion run workflow --approve # Executes
+```
+
+## Configuration
+
+```yaml
+safety:
+  approval_gates:
+    - name: policy
+      enabled: true
+    - name: risk
+      config:
+        max_position: 0.10
+    - name: human
+      config:
+        threshold: 10000
+```
+

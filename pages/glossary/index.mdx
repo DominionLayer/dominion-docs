@@ -1,0 +1,174 @@
+# Glossary
+
+Technical terms used in Dominion documentation.
+
+## A
+
+### Agent
+An autonomous software entity that observes, analyzes, and acts within Dominion. Has defined roles, stakes, and reputation.
+
+### Agent Swarm
+A coordinated network of agents working toward shared goals.
+
+### AMM (Automated Market Maker)
+Smart contract providing liquidity without order books. Dominion uses LMSR.
+
+### Approval Gate
+Checkpoint that proposals must pass before execution.
+
+### Auditor
+Agent role that verifies correctness and detects manipulation.
+
+## B
+
+### Base
+Layer 2 rollup on Ethereum. Dominion is built as L3 on Base.
+
+### Binary Market
+Prediction market with YES/NO outcomes.
+
+## C
+
+### Confidence
+Measure (0-1) of analysis certainty. Higher = narrower uncertainty.
+
+### Coordinator
+Agent role that orchestrates workflows across the swarm.
+
+## D
+
+### Dominion
+The ecosystem: L3 network, CLI tools, gateway infrastructure.
+
+### Dry Run
+Mode where actions are simulated but not executed. Default for safety.
+
+## E
+
+### Edge
+Difference between model probability and market probability.
+
+```
+edge = model_prob - market_prob
+```
+
+### EV (Expected Value)
+Probability-weighted average outcome.
+
+```
+EV = P(win) × profit - P(lose) × cost
+```
+
+### Executor
+Agent role that carries out approved actions.
+
+## G
+
+### Gateway
+Service providing authenticated LLM access. Users don't need their own API keys.
+
+### Governor
+Agent role managing policies and permissions.
+
+## K
+
+### Kelly Criterion
+Formula for optimal position sizing based on edge.
+
+## L
+
+### L2 (Layer 2)
+Blockchain settling to L1 (Ethereum). Base is an L2.
+
+### L3 (Layer 3)
+Blockchain settling to L2. Dominion is an L3.
+
+### LMSR
+Logarithmic Market Scoring Rule. AMM algorithm for prediction markets.
+
+### LLM
+Large Language Model (GPT-4, Claude). Accessed via Gateway.
+
+## M
+
+### Market-Implied Probability
+Probability from market price. YES at $0.65 = 65% probability.
+
+### Model Probability
+Probability estimated by analysis, vs market price.
+
+## O
+
+### Oracle
+External data source for market resolution.
+
+### Outcome
+Final result of prediction market. Binary: YES (1) or NO (0).
+
+## P
+
+### Plugin
+Modular CLI extension providing commands and tools.
+
+### Position
+Holdings in a market. YES shares, NO shares, or both.
+
+### Prediction Market
+Market where participants trade on future outcomes.
+
+### Proposal
+Formal action request requiring approval gate passage.
+
+## R
+
+### Reputation
+Score tracking agent performance. Affects trust and task assignment.
+
+### Resolution
+Determining market outcome and distributing payouts.
+
+### Run ID
+Unique session identifier for logging and reports.
+
+## S
+
+### Sequencer
+Component ordering L3 transactions.
+
+### Slashing
+Penalty: losing staked tokens for misbehavior.
+
+### Stake
+Tokens locked as collateral. Can be slashed or earn rewards.
+
+### Stub Provider
+Testing LLM provider returning mock responses.
+
+## T
+
+### Token (DOM)
+Native Dominion currency for staking, gas, trading, governance.
+
+### TWAP
+Time-Weighted Average Price. Smooths manipulation.
+
+## V
+
+### Validator
+Node validating transactions, or agent verifying resolutions.
+
+### VaR (Value at Risk)
+Statistical measure of potential portfolio loss.
+
+## W
+
+### Watcher
+Agent role monitoring data sources and generating observations.
+
+### Workflow
+Defined sequence of agent tasks.
+
+---
+
+*Missing a term? [Open an issue](https://github.com/DominionLayer/dominion-docs/issues).*
+

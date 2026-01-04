@@ -1,0 +1,140 @@
+# Coordination vs Execution
+
+A fundamental principle in Dominion: separate what you decide from what you do.
+
+## The Separation
+
+### Coordination (On-Chain)
+
+- Deciding what action to take
+- Recording proposals
+- Running approval gates
+- Tracking who approved what
+
+### Execution (Off-Chain OK)
+
+- Actually performing the action
+- Calling external APIs
+- Submitting transactions
+- Interacting with real systems
+
+## Why Separate?
+
+### 1. Auditability
+
+Every decision is recorded:
+```
+Proposal #123
+  Action: Buy 100 YES @ 0.62
+  Proposed by: agent_abc
+  Approved by: [gate_policy, gate_risk, auditor_001]
+  Timestamp: 2026-01-04T12:00:00Z
+```
+
+If something goes wrong, you can trace exactly what happened.
+
+### 2. Safety
+
+Execution only happens after approval:
+
+```
+Proposal → Policy Gate → Risk Gate → Auditor Gate → Execute
+              ↓              ↓            ↓
+           (reject)      (reject)     (reject)
+```
+
+Multiple checkpoints catch problems.
+
+### 3. Reversibility
+
+Before execution:
+- Proposal can be modified
+- Approval can be revoked
+- Simulation can be run
+
+After execution:
+- Action is final
+- Only outcomes can be recorded
+
+### 4. Accountability
+
+Clear records of:
+- Who proposed
+- Who approved
+- Who executed
+- What the outcome was
+
+## Approval Flow
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                   COORDINATION LAYER                     │
+│                                                          │
+│  1. Agent creates proposal                              │
+│     ↓                                                    │
+│  2. Policy gate checks rules                            │
+│     ↓                                                    │
+│  3. Risk gate checks exposure                           │
+│     ↓                                                    │
+│  4. Rate limiter checks frequency                       │
+│     ↓                                                    │
+│  5. Auditor reviews (if required)                       │
+│     ↓                                                    │
+│  6. Human reviews (if threshold exceeded)               │
+│     ↓                                                    │
+│  7. Approval receipt generated                          │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────┐
+│                   EXECUTION LAYER                        │
+│                                                          │
+│  8. Executor receives approved proposal                 │
+│     ↓                                                    │
+│  9. Executor performs action                            │
+│     ↓                                                    │
+│  10. Result recorded                                    │
+│     ↓                                                    │
+│  11. Auditor verifies                                   │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Dry Run Mode
+
+By default, coordination happens but execution is simulated:
+
+```bash
+# Dry run (default)
+dominion run workflow
+# Shows: "Would execute: ..."
+
+# Real execution
+dominion run workflow --approve
+# Actually executes
+```
+
+This is the safest default.
+
+## Recording Execution
+
+Even off-chain execution gets recorded:
+
+```typescript
+const result = await executor.execute(proposal, {
+  record: true,  // Default
+});
+
+// Creates execution record:
+// {
+//   proposal_id: '...',
+//   status: 'completed',
+//   result: {...},
+//   timestamp: '...',
+//   signature: '...'  // Executor's signature
+// }
+```
+
+Auditors can verify these records.
+

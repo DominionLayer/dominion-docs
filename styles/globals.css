@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --nextra-primary-hue: 250;
+  --nextra-primary-saturation: 80%;
+}
+
+/* Custom callout styles */
+.nx-callout {
+  @apply border-l-4 p-4 my-4 rounded-r-lg;
+}
+
+.nx-callout-warning {
+  @apply bg-amber-50 border-amber-500 dark:bg-amber-900/20;
+}
+
+.nx-callout-info {
+  @apply bg-blue-50 border-blue-500 dark:bg-blue-900/20;
+}
+
+.nx-callout-error {
+  @apply bg-red-50 border-red-500 dark:bg-red-900/20;
+}
+
+/* Code block enhancements */
+pre {
+  @apply !bg-slate-900;
+}
+
+/* Banner styling */
+.nextra-banner {
+  @apply bg-amber-500 text-black font-medium;
+}
+
+/* Custom typography */
+.nextra-content h1 {
+  @apply text-4xl font-bold tracking-tight;
+}
+
+.nextra-content h2 {
+  @apply text-2xl font-semibold mt-10 border-b pb-2;
+}
+
+/* Table styling */
+table {
+  @apply w-full border-collapse;
+}
+
+th {
+  @apply bg-slate-100 dark:bg-slate-800 text-left p-3 font-semibold;
+}
+
+td {
+  @apply p-3 border-t border-slate-200 dark:border-slate-700;
+}
+
+/* Link styling */
+.nextra-content a {
+  @apply text-dominion-600 dark:text-dominion-400 hover:underline;
+}
+
+/* Homepage hero */
+.hero-gradient {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+}
+

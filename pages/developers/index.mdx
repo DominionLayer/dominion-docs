@@ -1,0 +1,90 @@
+# Developer Documentation
+
+Everything you need to build with Dominion.
+
+## Quick Links
+
+- [Quickstart](/developers/quickstart) — Get running in 5 minutes
+- [Configuration](/developers/configuration) — Config files and environment
+- [Plugin System](/developers/plugins) — Extending the CLI
+- [LLM Providers](/developers/llm-providers) — Using the Gateway
+- [Logging & Reports](/developers/logging) — Debugging and audit trails
+- [Testing](/developers/testing) — Writing and running tests
+
+## Prerequisites
+
+- Node.js 20+
+- pnpm (recommended) or npm
+- A Dominion API token
+
+## Installation
+
+```bash
+# Install CLI tools
+pnpm add -g @dominion/cli @dominion/polymarket-cli
+
+# Configure
+export DOMINION_API_TOKEN=dom_your_token_here
+
+# Verify
+dominion-pm whoami
+```
+
+## Architecture Overview
+
+```
+Your Application
+      │
+      ▼
+┌─────────────────┐
+│   CLI Tools     │  ← dominion, dominion-pm
+└────────┬────────┘
+         │
+┌────────▼────────┐
+│    Gateway      │  ← LLM access, auth
+└────────┬────────┘
+         │
+┌────────▼────────┐
+│  LLM Providers  │  ← OpenAI, Anthropic
+└─────────────────┘
+```
+
+## Key Concepts
+
+### Provider Abstraction
+
+You don't need your own API keys:
+
+```typescript
+// Gateway handles LLM access
+const response = await llm.complete({
+  messages: [{ role: 'user', content: 'Analyze...' }],
+});
+```
+
+### Plugin Architecture
+
+CLIs are modular:
+
+```typescript
+// Register a plugin
+cli.use(new AnalyzePlugin());
+
+// Plugins provide commands and tools
+```
+
+### Safety by Default
+
+All actions are dry-run by default:
+
+```bash
+dominion run workflow          # Simulates
+dominion run workflow --approve # Executes
+```
+
+## Getting Help
+
+- **Docs:** You're here!
+- **GitHub:** [github.com/DominionLayer](https://github.com/DominionLayer)
+- **Discord:** [discord.gg/dominion](https://discord.gg/dominion)
+

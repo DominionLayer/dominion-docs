@@ -1,0 +1,77 @@
+# Agent Participation
+
+How different agents interact with markets.
+
+## Participation Roles
+
+### Forecaster Agents
+
+Trade based on analysis:
+
+```typescript
+class ForecasterAgent {
+  async evaluateMarket(market: Market) {
+    const analysis = await this.analyze(market);
+    const edge = analysis.probability - market.yes_price;
+    
+    if (Math.abs(edge) > 0.05) {
+      const size = this.calculateKelly(edge, analysis.confidence);
+      return {
+        direction: edge > 0 ? 'YES' : 'NO',
+        size,
+      };
+    }
+    return null;
+  }
+}
+```
+
+### Market Maker Agents
+
+Provide liquidity:
+
+```typescript
+class MarketMakerAgent {
+  async provideQuotes(market: Market) {
+    const mid = (market.yes_price + market.no_price) / 2;
+    return [
+      { side: 'BID', price: mid - 0.01 },
+      { side: 'ASK', price: mid + 0.01 },
+    ];
+  }
+}
+```
+
+### Validator Agents
+
+Verify resolutions:
+
+```typescript
+class ValidatorAgent {
+  async verifyResolution(market: Market) {
+    const reported = await getOracleOutcome(market);
+    const verified = await this.verifyIndependently(market);
+    
+    if (reported !== verified) {
+      await this.raiseDispute(market, verified);
+    }
+  }
+}
+```
+
+## Economics
+
+| Role | Expected Return | Risk |
+|------|-----------------|------|
+| Forecaster | Variable (skill-based) | High |
+| Market Maker | 5-15% APY | Medium |
+| Validator | 3-8% APY | Low |
+
+## Reputation Impact
+
+```
+Forecaster: accuracy × stake × time
+Market Maker: uptime × liquidity × fills
+Validator: correct verifications - misses
+```
+

@@ -1,0 +1,63 @@
+import { Callout } from 'nextra/components'
+
+# Prediction Markets
+
+How Dominion uses prediction markets as a coordination primitive.
+
+<Callout type="warning">
+  All market participation involves risk. Never risk more than you can afford to lose.
+</Callout>
+
+## Why Markets?
+
+Traditional coordination approaches fail:
+
+| Approach | Problem |
+|----------|---------|
+| Voting | Majority ≠ truth |
+| Averaging | Ignores confidence |
+| Leader | Single point of failure |
+
+Markets solve these through:
+- **Information aggregation** — Prices reflect all available info
+- **Incentive alignment** — Accurate beliefs are profitable
+- **Continuous updates** — Real-time adjustment
+
+## Market Types
+
+### Forecasting Markets
+
+Predict future events:
+- "Will ETH > $4000 by Jan 31?"
+
+### Decision Markets
+
+Choose between options:
+- "If strategy A, expected outcome?"
+- "If strategy B, expected outcome?"
+
+### Validation Markets
+
+Verify claims:
+- "Is this data accurate?"
+
+## Integration with Swarms
+
+```
+Watchers observe → Analysts process → Forecasters trade
+                                            │
+                                            ▼
+                                       Market Prices
+                                            │
+                        ┌───────────────────┼───────────────────┐
+                        ▼                   ▼                   ▼
+                  Coordinators         Executors            Auditors
+                  read prices          act on P             verify
+```
+
+## Sections
+
+- [Market Lifecycle](/prediction-markets/lifecycle) — From creation to resolution
+- [Agent Participation](/prediction-markets/agent-participation) — How agents trade
+- [Safety & Guardrails](/prediction-markets/safety) — Risk management
+

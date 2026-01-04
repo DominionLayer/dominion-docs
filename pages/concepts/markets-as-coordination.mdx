@@ -1,0 +1,153 @@
+# Markets as Coordination Primitive
+
+Prediction markets are the core coordination mechanism in Dominion.
+
+## Why Markets?
+
+### The Aggregation Problem
+
+Agent swarms need to combine information from many sources:
+- Multiple watchers seeing different data
+- Multiple analysts with different models
+- Uncertainty about the future
+
+Traditional approaches fail:
+
+| Approach | Problem |
+|----------|---------|
+| Voting | Majority ≠ truth |
+| Averaging | Ignores confidence |
+| Leader | Single point of failure |
+| Consensus | Slow, lowest common denominator |
+
+### The Market Solution
+
+Prices aggregate information optimally:
+- Each trader reveals their belief through trades
+- Price reflects the weighted average of all beliefs
+- Better-informed traders have more influence (they profit more)
+
+## How It Works
+
+### Information Flow
+
+```
+Watcher A sees X
+Watcher B sees Y       → Market price
+Analyst C thinks Z         = Aggregated probability
+```
+
+### Example
+
+Market: "Will ETH > $4000 by Jan 31?"
+
+```
+Trader 1 (saw bullish news): Buys YES at 0.55
+  → Price rises to 0.57
+
+Trader 2 (saw whale selling): Buys NO at 0.43
+  → Price falls to 0.54
+
+Trader 3 (strong model): Buys YES at 0.54
+  → Price rises to 0.58
+
+Current price: 0.58 = 58% probability
+```
+
+### Continuous Updating
+
+As new information arrives:
+1. Informed agents see opportunity
+2. They trade on their edge
+3. Price moves toward truth
+4. Repeat
+
+This happens continuously, not in batches.
+
+## Market Types in Dominion
+
+### 1. Forecasting Markets
+
+Predict future events:
+- "Will X happen by Y?"
+- Binary outcome
+
+### 2. Decision Markets
+
+Choose between options:
+- "If we do A, what's the outcome?"
+- "If we do B, what's the outcome?"
+- Compare conditional probabilities
+
+### 3. Validation Markets
+
+Verify claims:
+- "Is this data accurate?"
+- "Did this agent behave correctly?"
+
+## Integration with Swarm
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                       SWARM                              │
+│                                                          │
+│  Watchers observe → Analysts process → Forecasters trade │
+│                                               │          │
+│                                               ▼          │
+│                                      ┌──────────────┐   │
+│                                      │   MARKETS    │   │
+│                                      │              │   │
+│                                      │  Price = P   │   │
+│                                      └──────┬───────┘   │
+│                                             │           │
+│                           ┌─────────────────┼─────────┐ │
+│                           ▼                 ▼         ▼ │
+│                     Coordinators      Executors   Auditors
+│                     read prices       act on P    verify
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Accuracy Incentives
+
+Markets incentivize accuracy through profit/loss:
+
+```
+Belief: 70% probability
+Market: 55% price
+Edge: +15%
+
+If correct:
+  Bought at 0.55, sell at 1.00 = 81% return
+
+If wrong:
+  Bought at 0.55, sell at 0.00 = -100% return
+
+Expected value = 0.70 × 0.45 - 0.30 × 0.55 = 0.15 (positive)
+```
+
+Agents are rewarded for being right, punished for being wrong.
+
+## Limitations
+
+### Not Magic
+
+Markets can only aggregate *available* information. They can't:
+- Predict truly unknowable events
+- Overcome universal ignorance
+- Beat entropy
+
+### Manipulation Risk
+
+Well-funded attackers can temporarily move prices:
+- Mitigated by position limits
+- Mitigated by auditor monitoring
+- Mitigated by TWAP pricing
+
+### Liquidity Requirements
+
+Thin markets produce noisy signals:
+- Minimum liquidity requirements
+- Liquidity mining incentives
+- Market maker agents
+

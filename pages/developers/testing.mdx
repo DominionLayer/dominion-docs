@@ -1,0 +1,178 @@
+# Testing
+
+Writing and running tests for Dominion projects.
+
+## Test Framework
+
+Dominion uses **Vitest** for testing.
+
+## Running Tests
+
+```bash
+# All tests
+pnpm test
+
+# Watch mode
+pnpm test:watch
+
+# Specific file
+pnpm test tests/unit/estimators.test.ts
+
+# With coverage
+pnpm test --coverage
+```
+
+## Test Structure
+
+```
+tests/
+├── unit/
+│   ├── config.test.ts
+│   ├── estimators.test.ts
+│   └── edge.test.ts
+└── integration/
+    └── full-workflow.test.ts
+```
+
+## Unit Tests
+
+### Testing Estimators
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { BaselineEstimator } from '../../src/analysis/estimators/baseline.js';
+
+describe('BaselineEstimator', () => {
+  const estimator = new BaselineEstimator();
+
+  it('should estimate probability', async () => {
+    const market = {
+      id: 'test',
+      yes_price: 0.65,
+      volume_24h: 10000,
+    };
+
+    const result = await estimator.estimate(market);
+
+    expect(result.estimatedProbability).toBeGreaterThan(0);
+    expect(result.estimatedProbability).toBeLessThan(1);
+    expect(result.confidence).toBeDefined();
+  });
+});
+```
+
+### Testing Edge Calculations
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { calculateEdge } from '../../src/analysis/edge.js';
+
+describe('Edge Calculations', () => {
+  it('should calculate positive edge', () => {
+    const edge = calculateEdge(0.70, 0.60);
+    expect(edge).toBeCloseTo(0.10, 2);
+  });
+
+  it('should calculate negative edge', () => {
+    const edge = calculateEdge(0.50, 0.60);
+    expect(edge).toBeCloseTo(-0.10, 2);
+  });
+});
+```
+
+## Integration Tests
+
+```typescript
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { initDatabase } from '../../src/core/db/database.js';
+import { StubProvider } from '../../src/core/providers/stub.js';
+
+describe('Full Workflow', () => {
+  let db: Database;
+
+  beforeAll(async () => {
+    db = await initDatabase(':memory:');
+  });
+
+  afterAll(async () => {
+    await db.close();
+  });
+
+  it('should complete workflow', async () => {
+    const market = { id: 'test', yes_price: 0.55 };
+    const estimator = new BaselineEstimator();
+    
+    const analysis = await estimator.estimate(market);
+    
+    expect(analysis.estimatedProbability).toBeDefined();
+  });
+});
+```
+
+## Mock Providers
+
+### StubProvider
+
+For testing without API calls:
+
+```typescript
+import { StubProvider } from '../src/core/providers/stub.js';
+
+const provider = new StubProvider();
+const response = await provider.complete({
+  messages: [{ role: 'user', content: 'Test' }],
+});
+
+// Returns deterministic mock response
+expect(response.content).toBeDefined();
+```
+
+## Test Configuration
+
+```typescript
+// vitest.config.ts
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node',
+    include: ['tests/**/*.test.ts'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+    },
+  },
+});
+```
+
+## CI/CD
+
+```yaml
+# .github/workflows/test.yml
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm test
+```
+
+## Best Practices
+
+1. **Test in isolation** — Mock external dependencies
+2. **Use meaningful assertions** — Not just `toBeDefined()`
+3. **Test edge cases** — Empty inputs, invalid data
+4. **Keep tests fast** — In-memory DB, mock APIs
+5. **Name clearly** — Describe expected behavior
+

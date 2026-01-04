@@ -1,0 +1,203 @@
+# Plugin System
+
+The Dominion CLI uses a modular plugin architecture.
+
+## Overview
+
+Plugins extend the CLI with:
+- New commands
+- New tools
+- New workflows
+
+## Built-in Plugins
+
+| Plugin | Purpose |
+|--------|---------|
+| `observe` | Monitor data sources |
+| `analyze` | Process with LLMs |
+| `execute` | Carry out actions |
+| `infra` | Infrastructure coordination |
+| `market` | Market operations |
+| `governance` | Policy management |
+| `selfimprove` | Agent self-improvement |
+
+## Plugin Structure
+
+```typescript
+import { Plugin, Tool } from '@dominion/core';
+
+export class MyPlugin extends Plugin {
+  name = 'my-plugin';
+  
+  tools: Tool[] = [
+    {
+      name: 'my_tool',
+      description: 'Does something useful',
+      inputSchema: MyInputSchema,
+      outputSchema: MyOutputSchema,
+      execute: async (input) => {
+        // Tool logic
+        return result;
+      },
+    },
+  ];
+  
+  commands = [
+    {
+      name: 'my-command',
+      description: 'Run my plugin',
+      action: async (options) => {
+        // Command logic
+      },
+    },
+  ];
+}
+```
+
+## Creating a Plugin
+
+### 1. Define the Plugin Class
+
+```typescript
+// plugins/my-plugin/plugin.ts
+import { Plugin } from '@dominion/core';
+
+export class MyPlugin extends Plugin {
+  name = 'my-plugin';
+  version = '1.0.0';
+  
+  async initialize() {
+    // Setup code
+  }
+  
+  async shutdown() {
+    // Cleanup code
+  }
+}
+```
+
+### 2. Define Tools
+
+```typescript
+import { z } from 'zod';
+
+const MyInputSchema = z.object({
+  query: z.string(),
+  limit: z.number().default(10),
+});
+
+const MyOutputSchema = z.object({
+  results: z.array(z.string()),
+  count: z.number(),
+});
+
+export const myTool: Tool = {
+  name: 'search',
+  description: 'Search for something',
+  inputSchema: MyInputSchema,
+  outputSchema: MyOutputSchema,
+  execute: async (input) => {
+    const results = await doSearch(input.query, input.limit);
+    return {
+      results,
+      count: results.length,
+    };
+  },
+};
+```
+
+### 3. Register the Plugin
+
+```typescript
+// cli/index.ts
+import { createCLI } from '@dominion/core';
+import { MyPlugin } from './plugins/my-plugin';
+
+const cli = createCLI();
+cli.use(new MyPlugin());
+cli.run();
+```
+
+## Plugin Lifecycle
+
+```
+Load → Initialize → Ready → [Execute] → Shutdown
+```
+
+### Events
+
+```typescript
+class MyPlugin extends Plugin {
+  async onLoad() {
+    // Plugin loaded into CLI
+  }
+  
+  async initialize() {
+    // Setup resources
+  }
+  
+  async onReady() {
+    // Plugin ready to use
+  }
+  
+  async shutdown() {
+    // Cleanup resources
+  }
+}
+```
+
+## Plugin Configuration
+
+Plugins can define their own config schema:
+
+```typescript
+const MyConfigSchema = z.object({
+  apiKey: z.string(),
+  endpoint: z.string().url(),
+  timeout: z.number().default(5000),
+});
+
+class MyPlugin extends Plugin {
+  configSchema = MyConfigSchema;
+  
+  async initialize() {
+    const config = this.getConfig(); // Typed!
+    this.client = new Client(config.endpoint, config.apiKey);
+  }
+}
+```
+
+Config file:
+```yaml
+plugins:
+  my-plugin:
+    apiKey: "xxx"
+    endpoint: "https://api.example.com"
+```
+
+## Inter-Plugin Communication
+
+Plugins can call each other's tools:
+
+```typescript
+class AnalyzePlugin extends Plugin {
+  async analyze(data: any) {
+    // Call observe plugin's tool
+    const observations = await this.cli.call('observe.fetch', {
+      source: 'api',
+    });
+    
+    // Process observations
+    return this.processObservations(observations);
+  }
+}
+```
+
+## Best Practices
+
+1. **Single Responsibility** — One plugin, one purpose
+2. **Schema Everything** — Use Zod for all I/O
+3. **Handle Errors** — Don't crash the CLI
+4. **Document Tools** — Clear descriptions
+5. **Test Thoroughly** — Unit and integration tests
+

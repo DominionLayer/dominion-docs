@@ -1,0 +1,98 @@
+import { Callout, Cards, Card, Steps } from 'nextra/components'
+
+# Dominion Documentation
+
+<Callout type="warning" emoji="⚠️">
+  **Experimental Software**: Dominion is under active development. Use at your own risk. Nothing in this documentation constitutes financial advice.
+</Callout>
+
+## What is Dominion?
+
+**Dominion** is a coordination layer for autonomous agent swarms, built as the first Base-native Layer 3 network.
+
+<div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+  <div className="p-4 border rounded-lg dark:border-gray-700">
+    <h3 className="font-bold text-lg mb-2">🤖 Agent Swarms</h3>
+    <p className="text-sm text-gray-600 dark:text-gray-400">Coordinate multiple AI agents with defined roles, stakes, and reputation</p>
+  </div>
+  <div className="p-4 border rounded-lg dark:border-gray-700">
+    <h3 className="font-bold text-lg mb-2">📊 Prediction Markets</h3>
+    <p className="text-sm text-gray-600 dark:text-gray-400">Use markets as coordination primitives for information aggregation</p>
+  </div>
+  <div className="p-4 border rounded-lg dark:border-gray-700">
+    <h3 className="font-bold text-lg mb-2">🔒 Safety First</h3>
+    <p className="text-sm text-gray-600 dark:text-gray-400">Approval gates, auditor agents, and dry-run by default</p>
+  </div>
+</div>
+
+## Quick Start
+
+<Steps>
+
+### Install the CLI
+
+```bash
+npm install -g @dominion/cli
+# or
+pnpm add -g @dominion/cli
+```
+
+### Get your API token
+
+Contact the Dominion team or [run your own gateway](/developers/llm-providers#self-hosting-the-gateway).
+
+### Configure
+
+```bash
+export DOMINION_API_TOKEN=dom_your_token_here
+```
+
+### Start analyzing
+
+```bash
+dominion-pm scan
+dominion-pm analyze <market_id>
+```
+
+</Steps>
+
+## Documentation Sections
+
+<Cards>
+  <Card title="Introduction" href="/introduction" />
+  <Card title="Core Concepts" href="/concepts" />
+  <Card title="Architecture" href="/architecture" />
+  <Card title="Products" href="/products" />
+  <Card title="Developer Docs" href="/developers" />
+  <Card title="Prediction Markets" href="/prediction-markets" />
+  <Card title="Security" href="/security" />
+  <Card title="FAQ" href="/faq" />
+  <Card title="Glossary" href="/glossary" />
+</Cards>
+
+## Key Features
+
+| Feature | Description |
+|---------|-------------|
+| **Base L3** | First Base-native Layer 3 for high throughput agent coordination |
+| **Agent Swarms** | Orchestrate specialized agents (watchers, analysts, executors) |
+| **LLM Gateway** | Centralized gateway - users don't need their own API keys |
+| **Approval Gates** | All actions pass through safety checkpoints |
+| **Prediction Markets** | Native support for forecasting and decision markets |
+| **Audit Trail** | Complete logging for compliance and debugging |
+
+## Important Disclaimers
+
+<Callout type="error" emoji="🚫">
+  **Not Financial Advice**: All analysis and simulation outputs are for informational purposes only. Never risk more than you can afford to lose.
+</Callout>
+
+- Dominion does **not** execute trades automatically
+- All market-related actions require explicit user approval
+- Probability estimates include uncertainty ranges
+- Past performance does not guarantee future results
+
+---
+
+Ready to learn more? Start with the [Introduction](/introduction).
+

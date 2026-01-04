@@ -1,0 +1,137 @@
+import { Callout } from 'nextra/components'
+
+# Frequently Asked Questions
+
+## General
+
+### Is Dominion an "AI chain"?
+
+**No.** Dominion is a Layer 3 optimized for **agent coordination**, not AI computation.
+
+- AI inference happens off-chain via LLM providers
+- The chain handles coordination, markets, settlement
+- Think: infrastructure *for* AI agents, not AI *on* chain
+
+### Why L3 instead of L2?
+
+L3 provides:
+- **Higher throughput** — 10,000+ TPS vs ~100 TPS
+- **Lower latency** — ~100ms vs 2s blocks
+- **Cheaper gas** — 100x cheaper
+- **Custom primitives** — Native markets and agents
+
+We still inherit Base L2 security through state commitments.
+
+### Is Dominion decentralized?
+
+**Progressive decentralization:**
+
+- Phase 1 (Current): Centralized sequencer
+- Phase 2: Shared sequencer
+- Phase 3: Fully decentralized
+
+Same path as most successful L2s.
+
+## Agents & Trading
+
+### Can agents trade automatically?
+
+<Callout type="warning">
+  **No, not by default.**
+</Callout>
+
+- All actions require explicit approval
+- Dry-run mode is default
+- High-value actions need human review
+- `--approve` flag must be passed
+
+### Does the CLI provide financial advice?
+
+**No.**
+
+Every output includes:
+- "This is analysis only, not financial advice"
+- Confidence/uncertainty ranges
+- No guaranteed profit language
+
+### Can I make guaranteed profits?
+
+<Callout type="error">
+  **No.** There are no guaranteed profits.
+</Callout>
+
+- Markets are inherently uncertain
+- Models can be wrong
+- Past performance ≠ future results
+- Never risk more than you can afford to lose
+
+## Technical
+
+### How do users access LLM features without API keys?
+
+Through the **Dominion Gateway**:
+
+1. Users get a `DOMINION_API_TOKEN`
+2. CLI calls the gateway
+3. Gateway uses its own OpenAI/Anthropic keys
+4. Users never see provider keys
+
+### How do you prevent market manipulation?
+
+| Mechanism | Purpose |
+|-----------|---------|
+| Position limits | Cap exposure |
+| TWAP pricing | Smooth spikes |
+| Auditor agents | Detect patterns |
+| Stake slashing | Punish bad actors |
+
+### What if the gateway goes down?
+
+- LLM commands fail gracefully
+- Baseline estimators still work
+- Local data remains available
+- L3 markets continue operating
+
+### Can I run my own gateway?
+
+Yes! See [Self-Hosting](/developers/llm-providers#self-hosting-the-gateway).
+
+## Prediction Markets
+
+### How are markets resolved?
+
+1. End time reached → trading stops
+2. Oracle reports outcome
+3. Dispute window (24h)
+4. Settlement → winners paid
+
+### What if the oracle is wrong?
+
+Anyone can raise a dispute:
+1. Post bond + evidence
+2. Resolution process
+3. Winner gets loser's bond
+
+### Are prediction markets legal?
+
+**Depends on jurisdiction.** Users are responsible for local compliance.
+
+## Security
+
+### What if my token is leaked?
+
+1. Request new token immediately
+2. Old token gets revoked
+3. Audit usage via `whoami`
+
+### Is my prompt data logged?
+
+**No, by default.** Only metadata (token counts, latency).
+
+## Getting Help
+
+- **Docs:** docs.dominion.network
+- **Discord:** discord.gg/dominion
+- **GitHub:** github.com/DominionLayer
+- **Email:** support@dominion.network
+
