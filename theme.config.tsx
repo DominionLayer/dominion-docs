@@ -38,7 +38,7 @@ const config: DocsThemeConfig = {
     key: 'experimental-warning',
     text: (
       <span>
-        ⚠️ Dominion is experimental software. Use at your own risk. This is not financial advice.
+        Dominion is experimental software. Use at your own risk. This is not financial advice.
       </span>
     ),
   },
